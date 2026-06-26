@@ -1,20 +1,18 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# SÈNZY AI V2
 
-# Run and deploy your AI Studio app
+SÈNZY AI V2 adalah AI Assistant modern dengan tampilan elegan dan respons cepat.
 
-This contains everything you need to run your app locally.
+## Features
+- 🤖 AI Chat
+- 💬 Riwayat Chat
+- 🌙 Dark UI
+- 📱 Responsive
+- 🇮🇩 Bahasa Indonesia
+- ⚡ Fast Response
 
-View your app in AI Studio: https://ai.studio/apps/fee04533-bb94-4352-b838-6d2759fcf21f
+## Tech
+- HTML
+- CSS
+- JavaScript
 
-## Run Locally
-
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+Created by Senzy.
