@@ -1,0 +1,13 @@
+{
+  "name": "senzy-ai-v2-static",
+  "version": "1.0.0",
+  "description": "Pure HTML/JS/CSS version",
+  "scripts": {
+    "dev": "npx serve -p 3000",
+    "build": "echo 'No build needed'"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
+  }
+}

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SÈNZY AI V2</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Markdown and Highlighting -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animation.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="theme-dark">
+    <!-- Aurora Background -->
+    <div class="aurora-bg">
+        <div class="aurora-blob aurora-blob-1"></div>
+        <div class="aurora-blob aurora-blob-2"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="glass-panel main-header">
+            <div class="brand">
+                <div class="logo-icon" id="brand-logo" style="cursor: pointer;" title="Click 5x for Admin Mode">
+                    <i data-lucide="bot"></i>
+                </div>
+                <h1>SÈNZY <span>V2</span></h1>
+            </div>
+            
+            <div class="mode-switch glass-panel-inner">
+                <button id="btn-mode-ai" class="active">
+                    <i data-lucide="bot"></i> <span class="hide-mobile">AI MODE</span>
+                </button>
+                <button id="btn-mode-tikdown">
+                    <i data-lucide="download"></i> <span class="hide-mobile">TIKDOWN</span>
+                </button>
+            </div>
+
+            <button id="btn-settings" class="glass-btn icon-btn">
+                <i data-lucide="settings"></i>
+            </button>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- AI Mode View -->
+            <div id="view-ai" class="view-section active">
+                <div class="chat-header-actions">
+                    <button id="btn-clear-chat" class="glass-btn icon-btn text-danger" title="Clear Chat">
+                        <i data-lucide="trash-2"></i>
+                    </button>
+                </div>
+                <div id="chat-container" class="chat-container custom-scrollbar">
+                    <!-- Chat messages will be appended here -->
+                </div>
+                <div class="input-area">
+                    <div class="input-glass-panel">
+                        <textarea id="chat-input" rows="1" placeholder="Message SÈNZY AI..."></textarea>
+                        <div class="input-actions">
+                            <button id="btn-stop-chat" class="btn-action stop-btn hidden">
+                                <i data-lucide="stop-circle"></i>
+                            </button>
+                            <button id="btn-send-chat" class="btn-action send-btn disabled">
+                                <i data-lucide="send"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="engine-badge">SÈNZY AI ENGINE v2.0 • senzy@lstc</div>
+                </div>
+            </div>
+
+            <!-- Tikdown Mode View -->
+            <div id="view-tikdown" class="view-section hidden">
+                <div class="tikdown-container">
+                    <div class="tikdown-header">
+                        <div class="tikdown-icon">
+                            <i data-lucide="download"></i>
+                        </div>
+                        <h2>TikDown Premium</h2>
+                        <p>Download TikTok videos without watermark instantly.</p>
+                    </div>
+
+                    <div class="tikdown-input-group glass-panel">
+                        <i data-lucide="link"></i>
+                        <input type="text" id="tikdown-input" placeholder="Paste TikTok URL here...">
+                        <button id="btn-fetch-tikdown" class="btn-primary">
+                            <span id="tikdown-btn-text">Fetch</span>
+                            <i data-lucide="loader-2" class="spin hidden" id="tikdown-loader"></i>
+                        </button>
+                    </div>
+
+                    <div id="tikdown-error" class="error-toast hidden"></div>
+
+                    <div id="tikdown-result" class="tikdown-result glass-panel hidden">
+                        <div class="result-cover">
+                            <img id="tikdown-cover" src="" alt="Cover">
+                            <div class="result-author">
+                                <img id="tikdown-avatar" src="" alt="Avatar">
+                                <span id="tikdown-nickname"></span>
+                            </div>
+                        </div>
+                        <div class="result-actions">
+                            <p id="tikdown-title" class="result-title"></p>
+                            <div class="result-stats" style="display: flex; gap: 12px; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 16px;">
+                                <span title="Duration"><i data-lucide="clock" style="width: 14px; height: 14px; vertical-align: middle;"></i> <span id="tikdown-duration">0s</span></span>
+                                <span title="File Size"><i data-lucide="hard-drive" style="width: 14px; height: 14px; vertical-align: middle;"></i> <span id="tikdown-size">0 MB</span></span>
+                            </div>
+                            <div class="action-buttons">
+                                <button id="btn-dl-video" class="btn-action-wide btn-primary">
+                                    <i data-lucide="play-circle"></i> Download Video (No Watermark)
+                                </button>
+                                <button id="btn-dl-audio" class="btn-action-wide btn-purple">
+                                    <i data-lucide="music"></i> Download Original Audio
+                                </button>
+                                <div style="display: flex; gap: 12px;">
+                                    <button id="btn-copy-link" class="btn-action-wide btn-secondary" style="flex: 1;">
+                                        <i data-lucide="link"></i> Copy Link
+                                    </button>
+                                    <button id="btn-share" class="btn-action-wide btn-secondary" style="flex: 1;">
+                                        <i data-lucide="share-2"></i> Share
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h2><i data-lucide="sliders"></i> Settings</h2>
+                <button id="btn-close-settings" class="icon-btn"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body custom-scrollbar">
+                
+                <div class="setting-group admin-only hidden">
+                    <label><i data-lucide="key"></i> AI Endpoint / API Key</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="password" id="setting-api-key" placeholder="Azbry/Gemini URL or Key..." class="glass-input">
+                        <button id="btn-save-api-key" class="btn-primary" style="padding: 12px 16px; border-radius: 12px; white-space: nowrap; height: 100%;">Save</button>
+                    </div>
+                    <small id="api-key-status">Stored locally. Admin mode only.</small>
+                </div>
+
+                <div class="setting-group">
+                    <label><i data-lucide="moon"></i> Theme</label>
+                    <div class="toggle-group">
+                        <button class="toggle-btn" data-theme="dark">Dark</button>
+                        <button class="toggle-btn" data-theme="light">Light</button>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <label><i data-lucide="type"></i> Font Size</label>
+                    <div class="toggle-group font-size-group">
+                        <button class="toggle-btn" data-size="small">Small</button>
+                        <button class="toggle-btn" data-size="medium">Medium</button>
+                        <button class="toggle-btn" data-size="large">Large</button>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <label>Typing Speed (<span id="speed-value">20</span>ms)</label>
+                    <input type="range" id="setting-speed" min="0" max="100" step="5" value="20">
+                    <small>Lower is faster. 0ms disables typing effect.</small>
+                </div>
+
+                <div class="setting-group admin-only hidden">
+                    <label style="display: flex; justify-content: space-between; width: 100%;">
+                        <span><i data-lucide="message-square"></i> System Persona</span>
+                        <button id="btn-toggle-prompt" style="background:none; border:none; color:var(--primary-color); cursor:pointer; font-size: 0.75rem;">Show</button>
+                    </label>
+                    <textarea id="setting-prompt" rows="3" class="glass-input" style="display: none;"></textarea>
+                    <div id="setting-prompt-masked" class="glass-input" style="display: block; opacity: 0.5; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding: 12px 16px; min-height: 48px;">••••••••••••••••••</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="js/utils.js" type="module"></script>
+    <script src="js/storage.js" type="module"></script>
+    <script src="js/ui.js" type="module"></script>
+    <script src="js/ai.js" type="module"></script>
+    <script src="js/tikdown.js" type="module"></script>
+    <script src="js/app.js" type="module"></script>
+</body>
+</html>
+
