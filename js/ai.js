@@ -115,11 +115,7 @@ async function handleSend() {
     if (isGenerating) return;
     
     const settings = getSettings();
-    if (!settings.apiKey) {
-        alert("Please set your Gemini API Key in Settings first.");
-        document.getElementById('settings-modal').classList.remove('hidden');
-        return;
-    }
+    
 
     const inputEl = document.getElementById('chat-input');
     const text = inputEl.value.trim();
@@ -173,7 +169,7 @@ async function handleSend() {
             console.log('Generation stopped by user');
         } else {
             console.error('API Error:', error);
-            updateAiMessage(aiId, `⚠️ **Error:** ${error.message}. Please check your API key and connection.`, true);
+            updateAiMessage(aiId, `⚠️ **Error:** ${error check your API key and connection.`, true);
         }
     } finally {
         isGenerating = false;
@@ -215,33 +211,15 @@ User: ${newUserText}
 let endpoint = `https://api.azbry.com/api/ai/claude?q=${encodeURIComponent(systemPrompt)}`;
     
     // Fallback to Gemini if the user put a Gemini key in settings
-    let isGemini = settings.apiKey && settings.apiKey.startsWith('AQ');
     
-    if (isGemini) {
-        endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?alt=sse&key=${settings.apiKey}`;
-    }
+    
+    
 
     let requestOptions = {
         signal: abortController.signal
     };
 
-    if (isGemini) {
-        const geminiContents = chatHistory.slice(0, -1).map(msg => ({
-            role: msg.role === 'user' ? 'user' : 'model',
-            parts: [{ text: msg.content }]
-        }));
-        geminiContents.push({ role: 'user', parts: [{ text: newUserText }] });
-        
-        requestOptions.method = 'POST';
-        requestOptions.headers = { 'Content-Type': 'application/json' };
-        requestOptions.body = JSON.stringify({
-            contents: geminiContents,
-            systemInstruction: { parts: [{ text: settings.systemPrompt }] }
-        });
-    } else {
-        requestOptions.method = 'GET';
-        // Note: The Azbry endpoint doesn't need API keys or auth headers as per instructions
-    }
+    requestOptions.method = 'GET';
 
     let response;
     let retries = 3;
@@ -273,42 +251,7 @@ let endpoint = `https://api.azbry.com/api/ai/claude?q=${encodeURIComponent(syste
     const contentType = response.headers.get('content-type') || '';
     let fullResponse = '';
 
-    if (isGemini) {
-        // Stream parsing for Gemini
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder("utf-8");
-        let buffer = '';
-
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            
-            buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split('\n');
-            buffer = lines.pop(); // Keep incomplete line
-            
-            for (const line of lines) {
-                if (line.trim() === '') continue;
-                if (line.startsWith('data: ')) {
-                    const dataStr = line.slice(6).trim();
-                    if (dataStr === '[DONE]') continue;
-                    
-                    try {
-                        const data = JSON.parse(dataStr);
-                        const chunkText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-                        
-                        if (chunkText) {
-                            fullResponse += chunkText;
-                            updateAiMessage(aiMessageId, fullResponse, false);
-                            if (settings.typingSpeed > 0) {
-                                await new Promise(r => setTimeout(r, settings.typingSpeed));
-                            }
-                        }
-                    } catch (e) {}
-                }
-            }
-        }
-    } else {
+    
         // Handle Azbry JSON response
         let data;
         let responseBodyText = '';
